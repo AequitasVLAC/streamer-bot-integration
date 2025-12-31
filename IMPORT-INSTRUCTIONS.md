@@ -86,40 +86,54 @@ Follow the step-by-step guide in `streamerbot-imports/QUICK-START.md` to manuall
 
 ```
 streamerbot-imports/
-├── README.md                          # Overview (this file)
+├── README.md                          # Overview
 ├── QUICK-START.md                     # Step-by-step setup guide
-├── action-chat-egg-reward.json        # Chat message rewards
-├── action-cheer-reward.json           # Bit cheer rewards
-├── action-subscription-reward.json    # Subscription rewards
-├── command-eggs.json                  # !eggs command
-├── command-eggpack.json               # !eggpack command
-├── command-buyD20.json                # !buyD20 command
-├── command-buyRRT.json                # !buyRRT command
-└── command-roll20.json                # !roll20 game
+│
+├── Reward Actions
+├── action-chat-egg-reward.json        # Chat message rewards (5 eggs/msg)
+├── action-cheer-reward.json           # Bit cheer rewards (1 egg/bit)
+├── action-subscription-reward.json    # Subscription rewards (500-2000 eggs)
+├── action-raid-reward.json            # Raid rewards (10 eggs/raider)
+│
+├── Basic Commands
+├── command-eggs.json                  # !eggs - Check balance
+├── command-eggpack.json               # !eggpack - View inventory
+├── command-top.json                   # !top - Leaderboard (top 10)
+│
+├── Token System
+├── command-buyD20.json                # !buyD20 - Buy D20 tokens (100 eggs each)
+├── command-buyRRT.json                # !buyRRT - Buy RRTokens (50 eggs each)
+│
+├── Games
+├── command-roll20.json                # !roll20 - D20 dice game
+├── command-roulette.json              # !roulette - Weighted roulette game
+│
+├── PvP System
+├── command-pvp.json                   # !pvp & !duel - Challenge players
+├── command-accept.json                # !accept - Accept PvP challenge
+│
+├── Adventure System
+├── command-adventure.json             # !adventure - Start D&D adventure
+├── command-save.json                  # !save - Make saving throw
+├── adventure-stories.json             # Story templates (8 adventures)
+│
+└── Moderator Commands
+    ├── command-giveggs.json           # !giveggs - Grant eggs to user
+    ├── command-takeggs.json           # !takeggs - Remove eggs from user
+    ├── command-resetuser.json         # !resetuser - Reset user data
+    └── command-ecobalance.json        # !ecobalance - View economy stats
 ```
 
-## Additional Files to Create
+## Special Installation Notes
 
-The following actions are described in the main documentation but not yet provided as JSON templates. You can create them following the same patterns:
+### Adventure System Setup
+To use the adventure system (`!adventure` and `!save` commands):
+1. Copy `adventure-stories.json` to `C:\StreamerBot\UserData\adventure-stories.json`
+2. The system will automatically load stories from this file
+3. You can expand the story library by adding more adventures to this JSON file
 
-### Commands
-- `!top` - Leaderboard
-- `!roulette` - Roulette game
-- `!pvp` - PvP battles
-- `!accept` - Accept PvP
-- `!duel` - PvP alias
-- `!adventure` - Start adventure
-- `!save` - Make saving throw
-
-### Moderator Commands
-- `!giveggs` - Grant eggs
-- `!takeggs` - Remove eggs
-- `!resetuser` - Reset user data
-- `!ecobalance` - Economy stats
-
-### Additional Reward Actions
-- Watch time / loyalty rewards
-- Raid rewards
+### Watch Time / Loyalty Rewards
+For watch time rewards, you'll need to configure Streamer.bot's built-in Twitch loyalty integration separately. This is not included in the JSON templates as it's a platform-specific configuration.
 
 ## Technical Details
 
