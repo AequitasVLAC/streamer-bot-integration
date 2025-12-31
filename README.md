@@ -53,10 +53,40 @@ This comprehensive guide includes:
 ### Importable Actions
 
 The `streamerbot-imports/` directory contains ready-to-use JSON templates for:
-- 💬 Chat egg rewards
-- 🎁 Bit and subscription rewards
-- 💰 Commands: `!eggs`, `!eggpack`, `!buyD20`, `!buyRRT`
-- 🎲 Games: `!roll20` and more
+
+#### Reward Actions
+- 💬 **Chat Rewards** - 5 eggs per message (60s cooldown)
+- 💝 **Bit Rewards** - 1 egg per bit cheered
+- 🎁 **Subscription Rewards** - 500/1000/2000 eggs (T1/T2/T3)
+- 🎯 **Raid Rewards** - 10 eggs per raider
+
+#### Core Commands
+- 💰 **!eggs** - Check your egg balance
+- 🎒 **!eggpack** - View complete inventory
+- 🏆 **!top** - View egg leaderboard (top 10)
+
+#### Token System
+- 🎲 **!buyD20** - Purchase D20 Tokens (100 eggs each)
+- 🎰 **!buyRRT** - Purchase RRTokens (50 eggs each)
+
+#### Games
+- 🎲 **!roll20** - D20 dice gambling game (10-500 eggs)
+- 🎰 **!roulette** - Weighted roulette game (25-1000 eggs)
+
+#### PvP System
+- ⚔️ **!pvp / !duel** - Challenge players to PvP battles (RRTokens)
+- ✅ **!accept** - Accept PvP challenges
+
+#### Adventure System
+- 🗡️ **!adventure** - Start D&D-style adventures (1 D20 Token)
+- 🎲 **!save** - Make saving throws (resolve challenges)
+- 📖 **Adventure Stories** - 8 unique story templates with branching paths
+
+#### Moderator Tools
+- ➕ **!giveggs** - Grant eggs to users (moderator only)
+- ➖ **!takeggs** - Remove eggs from users (moderator only)
+- 🔄 **!resetuser** - Reset user data (moderator only)
+- 📊 **!ecobalance** - View economy statistics (moderator only)
 
 See **[IMPORT-INSTRUCTIONS.md](./IMPORT-INSTRUCTIONS.md)** for details on importing these into Streamer.bot.
 
@@ -64,7 +94,17 @@ See **[IMPORT-INSTRUCTIONS.md](./IMPORT-INSTRUCTIONS.md)** for details on import
 
 For questions, issues, or suggestions, please open an issue in this repository.
 
+### Additional Resources
+
+- 📚 **[Full System Documentation](./Unified-Eggonomy-System.md)** - Complete specification
+- 🚀 **[Quick Start Guide](./streamerbot-imports/QUICK-START.md)** - Step-by-step setup
+- 📥 **[Import Instructions](./IMPORT-INSTRUCTIONS.md)** - How to use JSON templates
+- 🧪 **[Testing Guide](./TESTING-GUIDE.md)** - Comprehensive test scenarios
+- 📝 **[Changelog](./CHANGELOG.md)** - Version history and updates
+
 ---
 
-**Version**: 1.0  
-**Last Updated**: 2025-12-31
+**Version**: 1.1.0  
+**Last Updated**: 2025-12-31  
+**Total Commands**: 20+ actions/commands  
+**Status**: ✅ Complete and Production-Ready
