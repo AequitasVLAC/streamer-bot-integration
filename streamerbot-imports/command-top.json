@@ -1,0 +1,29 @@
+{
+  "name": "!top - Egg Leaderboard",
+  "enabled": true,
+  "group": "Eggonomy - Commands",
+  "description": "Display the top 10 egg holders (30s global cooldown)",
+  "triggers": [
+    {
+      "type": "Command",
+      "command": "!top",
+      "caseSensitive": false
+    }
+  ],
+  "conditions": [],
+  "actions": [
+    {
+      "type": "C# Code",
+      "name": "Display Leaderboard",
+      "code": "using System;\nusing System.IO;\nusing System.Linq;\nusing System.Collections.Generic;\nusing Newtonsoft.Json.Linq;\n\npublic class CPHInline\n{\n    public bool Execute()\n    {\n        // Load user data\n        string dataPath = @\"C:\\StreamerBot\\UserData\\eggs.json\";\n        \n        if (!File.Exists(dataPath)) {\n            CPH.SendMessage(\"🏆 No egg data yet! Start earning eggs by chatting! 🥚\");\n            return false;\n        }\n        \n        string jsonData = File.ReadAllText(dataPath);\n        JObject data = JObject.Parse(jsonData);\n        \n        if (data[\"users\"] == null || !data[\"users\"].HasValues) {\n            CPH.SendMessage(\"🏆 No egg data yet! Start earning eggs by chatting! 🥚\");\n            return false;\n        }\n        \n        // Build leaderboard\n        var userList = new List<Tuple<string, int>>();\n        \n        foreach (var user in data[\"users\"]) {\n            string userId = user.Key;\n            int eggs = (int)(user.Value[\"eggs\"] ?? 0);\n            \n            // Try to get username from Streamer.bot API or use userId as fallback\n            string userName = userId;\n            try {\n                var userInfo = CPH.TwitchGetUser(userId);\n                if (userInfo != null) {\n                    userName = userInfo.UserLogin;\n                }\n            } catch {\n                // Use userId if username lookup fails\n            }\n            \n            userList.Add(new Tuple<string, int>(userName, eggs));\n        }\n        \n        // Sort by eggs descending and take top 10\n        var topUsers = userList.OrderByDescending(u => u.Item2).Take(10).ToList();\n        \n        if (topUsers.Count == 0) {\n            CPH.SendMessage(\"🏆 No egg data yet! Start earning eggs by chatting! 🥚\");\n            return false;\n        }\n        \n        // Build message\n        string message = \"🏆 Top Egg Holders: \";\n        for (int i = 0; i < topUsers.Count; i++) {\n            if (i > 0) message += \" | \";\n            message += $\"{i + 1}. {topUsers[i].Item1} ({topUsers[i].Item2} 🥚)\";\n        }\n        \n        CPH.SendMessage(message);\n        return true;\n    }\n}"
+    }
+  ],
+  "cooldown": {
+    "enabled": true,
+    "type": "Global",
+    "seconds": 30
+  },
+  "permissions": {
+    "everyone": true
+  }
+}
