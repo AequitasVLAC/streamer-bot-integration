@@ -1,0 +1,31 @@
+{
+  "name": "Chat Message Egg Reward",
+  "enabled": true,
+  "group": "Eggonomy - Rewards",
+  "description": "Awards 5 eggs for chat messages (60s cooldown per user)",
+  "triggers": [
+    {
+      "type": "Event",
+      "event": "TwitchChatMessage"
+    }
+  ],
+  "conditions": [
+    {
+      "type": "UserCooldown",
+      "seconds": 60
+    }
+  ],
+  "actions": [
+    {
+      "type": "C# Code",
+      "name": "Award Chat Eggs",
+      "code": "using System;\nusing System.IO;\nusing Newtonsoft.Json.Linq;\n\npublic class CPHInline\n{\n    public bool Execute()\n    {\n        string userId = args[\"userId\"].ToString();\n        string userName = args[\"userName\"].ToString();\n        \n        // Load user data\n        string dataPath = @\"C:\\StreamerBot\\UserData\\eggs.json\";\n        \n        JObject data;\n        if (File.Exists(dataPath)) {\n            string jsonData = File.ReadAllText(dataPath);\n            data = JObject.Parse(jsonData);\n        } else {\n            data = new JObject();\n            data[\"users\"] = new JObject();\n        }\n        \n        // Initialize user if needed\n        if (data[\"users\"] == null) data[\"users\"] = new JObject();\n        if (data[\"users\"][userId] == null) {\n            data[\"users\"][userId] = new JObject();\n            data[\"users\"][userId][\"eggs\"] = 0;\n            data[\"users\"][userId][\"d20Tokens\"] = 0;\n            data[\"users\"][userId][\"rrTokens\"] = 0;\n        }\n        \n        // Award eggs\n        int currentEggs = (int)(data[\"users\"][userId][\"eggs\"] ?? 0);\n        data[\"users\"][userId][\"eggs\"] = currentEggs + 5;\n        \n        File.WriteAllText(dataPath, data.ToString());\n        \n        // Optional: Send whisper notification\n        // CPH.SendMessage($\"/w {userName} 🥚 +5 eggs!\");\n        \n        return true;\n    }\n}"
+    }
+  ],
+  "cooldown": {
+    "enabled": false
+  },
+  "permissions": {
+    "everyone": true
+  }
+}

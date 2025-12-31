@@ -1,0 +1,29 @@
+{
+  "name": "!roll20 - Play Roll20 Game",
+  "enabled": true,
+  "group": "Eggonomy - Games",
+  "description": "D20 rolling game where users wager eggs (10-500)",
+  "triggers": [
+    {
+      "type": "Command",
+      "command": "!roll20",
+      "caseSensitive": false
+    }
+  ],
+  "conditions": [],
+  "actions": [
+    {
+      "type": "C# Code",
+      "name": "Roll20 Game Logic",
+      "code": "using System;\nusing System.IO;\nusing Newtonsoft.Json.Linq;\n\npublic class CPHInline\n{\n    public bool Execute()\n    {\n        string userId = args[\"userId\"].ToString();\n        string userName = args[\"userName\"].ToString();\n        string inputText = args[\"rawInput\"].ToString();\n        \n        // Parse wager\n        if (string.IsNullOrEmpty(inputText)) {\n            CPH.SendMessage($\"@{userName}, usage: !roll20 [wager]. Example: !roll20 50 (min: 10, max: 500)\");\n            return false;\n        }\n        \n        int wager;\n        if (!int.TryParse(inputText, out wager) || wager < 10 || wager > 500) {\n            CPH.SendMessage($\"@{userName}, wager must be between 10 and 500 eggs!\");\n            return false;\n        }\n        \n        // Load user data\n        string dataPath = @\"C:\\StreamerBot\\UserData\\eggs.json\";\n        string jsonData = File.ReadAllText(dataPath);\n        JObject data = JObject.Parse(jsonData);\n        \n        // Check balance\n        if (data[\"users\"] == null || data[\"users\"][userId] == null) {\n            CPH.SendMessage($\"@{userName}, you don't have any eggs! Start chatting to earn some!\");\n            return false;\n        }\n        \n        int currentEggs = (int)(data[\"users\"][userId][\"eggs\"] ?? 0);\n        \n        if (currentEggs < wager) {\n            CPH.SendMessage($\"@{userName}, you don't have enough eggs! You have {currentEggs} eggs.\");\n            return false;\n        }\n        \n        // Roll D20\n        Random rnd = new Random();\n        int roll = rnd.Next(1, 21);\n        \n        // Calculate result\n        int result = 0;\n        string flavor = \"\";\n        \n        if (roll == 1) {\n            result = -(wager + wager / 2);\n            flavor = \"💀 CRITICAL FAIL!\";\n        } else if (roll >= 2 && roll <= 5) {\n            result = -wager;\n            flavor = \"❌ Miss!\";\n        } else if (roll >= 6 && roll <= 10) {\n            result = -(wager / 2);\n            flavor = \"😬 Partial Loss\";\n        } else if (roll >= 11 && roll <= 14) {\n            result = 0;\n            flavor = \"😐 Push\";\n        } else if (roll >= 15 && roll <= 18) {\n            result = wager / 2;\n            flavor = \"✅ Hit!\";\n        } else if (roll == 19) {\n            result = wager;\n            flavor = \"🌟 Great Roll!\";\n        } else if (roll == 20) {\n            result = wager * 4 + 100;\n            flavor = \"💎 CRITICAL SUCCESS!\";\n        }\n        \n        // Update eggs\n        int newEggs = Math.Max(0, currentEggs + result);\n        data[\"users\"][userId][\"eggs\"] = newEggs;\n        \n        File.WriteAllText(dataPath, data.ToString());\n        \n        // Send message\n        string resultStr = result > 0 ? $\"+{result}\" : result.ToString();\n        CPH.SendMessage($\"🎲 @{userName} rolled a {roll}! {flavor} Result: {resultStr} eggs! Total: {newEggs} 🥚\");\n        \n        return true;\n    }\n}"
+    }
+  ],
+  "cooldown": {
+    "enabled": true,
+    "type": "User",
+    "seconds": 30
+  },
+  "permissions": {
+    "everyone": true
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "Cheer Bits Egg Reward",
+  "enabled": true,
+  "group": "Eggonomy - Rewards",
+  "description": "Awards 1 egg per bit cheered",
+  "triggers": [
+    {
+      "type": "Event",
+      "event": "TwitchCheer"
+    }
+  ],
+  "conditions": [],
+  "actions": [
+    {
+      "type": "C# Code",
+      "name": "Award Cheer Eggs",
+      "code": "using System;\nusing System.IO;\nusing Newtonsoft.Json.Linq;\n\npublic class CPHInline\n{\n    public bool Execute()\n    {\n        string userId = args[\"userId\"].ToString();\n        string userName = args[\"userName\"].ToString();\n        int bits = int.Parse(args[\"bits\"].ToString());\n        \n        // Load user data\n        string dataPath = @\"C:\\StreamerBot\\UserData\\eggs.json\";\n        \n        JObject data;\n        if (File.Exists(dataPath)) {\n            string jsonData = File.ReadAllText(dataPath);\n            data = JObject.Parse(jsonData);\n        } else {\n            data = new JObject();\n            data[\"users\"] = new JObject();\n        }\n        \n        // Initialize user if needed\n        if (data[\"users\"] == null) data[\"users\"] = new JObject();\n        if (data[\"users\"][userId] == null) {\n            data[\"users\"][userId] = new JObject();\n            data[\"users\"][userId][\"eggs\"] = 0;\n            data[\"users\"][userId][\"d20Tokens\"] = 0;\n            data[\"users\"][userId][\"rrTokens\"] = 0;\n        }\n        \n        // Award eggs (1 egg per bit)\n        int currentEggs = (int)(data[\"users\"][userId][\"eggs\"] ?? 0);\n        data[\"users\"][userId][\"eggs\"] = currentEggs + bits;\n        \n        File.WriteAllText(dataPath, data.ToString());\n        \n        CPH.SendMessage($\"🥚 @{userName} earned {bits} eggs from cheering! Thank you! Total: {currentEggs + bits} eggs.\");\n        \n        return true;\n    }\n}"
+    }
+  ],
+  "cooldown": {
+    "enabled": false
+  },
+  "permissions": {
+    "everyone": true
+  }
+}

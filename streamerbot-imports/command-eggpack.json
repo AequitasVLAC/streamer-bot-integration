@@ -1,0 +1,29 @@
+{
+  "name": "!eggpack - View Full Inventory",
+  "enabled": true,
+  "group": "Eggonomy - Commands",
+  "description": "Displays user's complete inventory including eggs and tokens",
+  "triggers": [
+    {
+      "type": "Command",
+      "command": "!eggpack",
+      "caseSensitive": false
+    }
+  ],
+  "conditions": [],
+  "actions": [
+    {
+      "type": "C# Code",
+      "name": "Get Full Inventory",
+      "code": "using System;\nusing System.IO;\nusing Newtonsoft.Json.Linq;\n\npublic class CPHInline\n{\n    public bool Execute()\n    {\n        string userId = args[\"userId\"].ToString();\n        string userName = args[\"userName\"].ToString();\n        \n        // Load user data\n        string dataPath = @\"C:\\StreamerBot\\UserData\\eggs.json\";\n        \n        if (!File.Exists(dataPath)) {\n            CPH.SendMessage($\"🎒 @{userName}'s Eggpack: 🥚 Eggs: 0 | 🎲 D20 Tokens: 0 | 🎰 RRTokens: 0\");\n            return false;\n        }\n        \n        string jsonData = File.ReadAllText(dataPath);\n        JObject data = JObject.Parse(jsonData);\n        \n        // Get user data\n        int eggs = 0;\n        int d20Tokens = 0;\n        int rrTokens = 0;\n        \n        if (data[\"users\"] != null && data[\"users\"][userId] != null) {\n            eggs = (int)(data[\"users\"][userId][\"eggs\"] ?? 0);\n            d20Tokens = (int)(data[\"users\"][userId][\"d20Tokens\"] ?? 0);\n            rrTokens = (int)(data[\"users\"][userId][\"rrTokens\"] ?? 0);\n        }\n        \n        CPH.SendMessage($\"🎒 @{userName}'s Eggpack: 🥚 Eggs: {eggs} | 🎲 D20 Tokens: {d20Tokens} | 🎰 RRTokens: {rrTokens}\");\n        return true;\n    }\n}"
+    }
+  ],
+  "cooldown": {
+    "enabled": true,
+    "type": "User",
+    "seconds": 10
+  },
+  "permissions": {
+    "everyone": true
+  }
+}
