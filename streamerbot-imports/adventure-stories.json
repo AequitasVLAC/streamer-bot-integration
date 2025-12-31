@@ -1,0 +1,100 @@
+{
+  "adventures": [
+    {
+      "id": "temple_001",
+      "title": "The Crumbling Temple",
+      "description": "You stand at the entrance of an ancient temple. Vines cover crumbling stone pillars, and an eerie silence fills the air. As you step inside, the floor begins to collapse beneath you!",
+      "challenge": "DEX",
+      "dc": 15,
+      "successOutcome": "With lightning reflexes, you leap to safety as the floor crumbles away! You spot a glowing artifact on a pedestal ahead.",
+      "failureOutcome": "You fall into a pit, but manage to grab the edge. Your hands scrape against the stone as you pull yourself up, bruised but alive.",
+      "successReward": 100,
+      "failureReward": 25,
+      "nextAdventures": ["temple_002", "forest_001"]
+    },
+    {
+      "id": "temple_002",
+      "title": "The Glowing Artifact",
+      "description": "The artifact pulses with an otherworldly light. As you reach for it, spectral guardians materialize around you, their hollow eyes fixed on your soul!",
+      "challenge": "WIS",
+      "dc": 16,
+      "successOutcome": "You recognize ancient protection runes and speak the words of passage. The guardians bow and fade away, allowing you to claim the artifact.",
+      "failureOutcome": "The guardians attack! You fight them off but sustain injuries. The artifact remains out of reach for now.",
+      "successReward": 150,
+      "failureReward": 30,
+      "nextAdventures": ["village_001", "cave_001"]
+    },
+    {
+      "id": "forest_001",
+      "title": "Whispering Woods",
+      "description": "Strange noises echo through the dark forest. Shadows move between the trees, and you hear whispers in a language you don't understand. Something is watching you.",
+      "challenge": "WIS",
+      "dc": 12,
+      "successOutcome": "You identify the sounds as friendly forest spirits. They guide you through the woods and show you hidden treasures.",
+      "failureOutcome": "You get turned around and lose your way. After hours of wandering, you finally find a path out, exhausted.",
+      "successReward": 75,
+      "failureReward": 20,
+      "nextAdventures": ["forest_002", "village_001"]
+    },
+    {
+      "id": "forest_002",
+      "title": "The Giant Spider",
+      "description": "Massive webs block your path through the forest. Before you can turn back, a giant spider drops from above, its fangs dripping with venom!",
+      "challenge": "DEX",
+      "dc": 14,
+      "successOutcome": "You dodge the spider's attack and counter with a swift strike! The spider retreats into the darkness.",
+      "failureOutcome": "The spider's fangs graze you, but you manage to drive it away. The venom makes you feel weak.",
+      "successReward": 90,
+      "failureReward": 25,
+      "nextAdventures": ["village_001", "mountain_001"]
+    },
+    {
+      "id": "village_001",
+      "title": "The Mysterious Merchant",
+      "description": "You arrive in a small village where a hooded merchant offers you a strange potion. They claim it will grant you great power, but something seems suspicious.",
+      "challenge": "INT",
+      "dc": 13,
+      "successOutcome": "You recognize the potion as a harmless elixir and negotiate a fair trade. The merchant reveals valuable information about nearby treasures.",
+      "failureOutcome": "You drink the potion without thinking. It tastes awful but seems harmless. The merchant laughs and disappears.",
+      "successReward": 80,
+      "failureReward": 20,
+      "nextAdventures": ["cave_001", "mountain_001"]
+    },
+    {
+      "id": "cave_001",
+      "title": "The Dark Cave",
+      "description": "A deep cave beckons you forward. Ancient markings cover the walls, and you hear the sound of running water echoing from within. Suddenly, the entrance begins to collapse!",
+      "challenge": "STR",
+      "dc": 15,
+      "successOutcome": "You brace yourself and hold up falling rocks long enough to escape! You find treasure that fell from the ceiling.",
+      "failureOutcome": "You barely escape, but your pack gets caught on the rocks. You lose some supplies but keep your life.",
+      "successReward": 120,
+      "failureReward": 30,
+      "nextAdventures": ["temple_001", "mountain_001"]
+    },
+    {
+      "id": "mountain_001",
+      "title": "The Frozen Peak",
+      "description": "You climb a treacherous mountain path. Icy winds cut through your clothes, and your fingers grow numb. Above you, an avalanche begins to rumble!",
+      "challenge": "CON",
+      "dc": 16,
+      "successOutcome": "You endure the cold and find shelter just as the avalanche roars past. Inside the cave, you discover ancient treasures.",
+      "failureOutcome": "The avalanche catches you, but you manage to dig yourself out. You're cold and battered but alive.",
+      "successReward": 140,
+      "failureReward": 35,
+      "nextAdventures": ["dragon_001", "temple_001"]
+    },
+    {
+      "id": "dragon_001",
+      "title": "The Dragon's Lair",
+      "description": "You enter a massive cavern filled with gold and jewels. At the center, a dragon opens one enormous eye and regards you with curiosity. It speaks in a rumbling voice: 'Prove your worth, mortal.'",
+      "challenge": "CHA",
+      "dc": 18,
+      "successOutcome": "Your words impress the dragon! It grants you a portion of its hoard and declares you a worthy adventurer.",
+      "failureOutcome": "The dragon is unimpressed but amused. It allows you to leave with a small trinket as a consolation prize.",
+      "successReward": 200,
+      "failureReward": 40,
+      "nextAdventures": ["temple_001", "forest_001"]
+    }
+  ]
+}

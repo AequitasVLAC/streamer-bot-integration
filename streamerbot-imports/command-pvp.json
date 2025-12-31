@@ -1,0 +1,34 @@
+{
+  "name": "!pvp - Challenge Player to PvP Battle",
+  "enabled": true,
+  "group": "Eggonomy - Games",
+  "description": "Challenge another player to a PvP battle with RRToken wager",
+  "triggers": [
+    {
+      "type": "Command",
+      "command": "!pvp",
+      "caseSensitive": false
+    },
+    {
+      "type": "Command",
+      "command": "!duel",
+      "caseSensitive": false
+    }
+  ],
+  "conditions": [],
+  "actions": [
+    {
+      "type": "C# Code",
+      "name": "PvP Challenge Logic",
+      "code": "using System;\nusing System.IO;\nusing Newtonsoft.Json.Linq;\n\npublic class CPHInline\n{\n    public bool Execute()\n    {\n        string userId = args[\"userId\"].ToString();\n        string userName = args[\"userName\"].ToString();\n        string inputText = args[\"rawInput\"].ToString();\n        \n        // Parse input: !pvp @opponent wager\n        if (string.IsNullOrEmpty(inputText)) {\n            CPH.SendMessage($\"@{userName}, usage: !pvp @opponent [wager]. Example: !pvp @user 5 (wager 1-20 RRTokens)\");\n            return false;\n        }\n        \n        string[] parts = inputText.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);\n        if (parts.Length < 2) {\n            CPH.SendMessage($\"@{userName}, usage: !pvp @opponent [wager]. Example: !pvp @user 5\");\n            return false;\n        }\n        \n        string opponentName = parts[0].TrimStart('@');\n        int wager;\n        \n        if (!int.TryParse(parts[1], out wager) || wager < 1 || wager > 20) {\n            CPH.SendMessage($\"@{userName}, wager must be between 1 and 20 RRTokens!\");\n            return false;\n        }\n        \n        // Get opponent user ID\n        var opponentInfo = CPH.TwitchGetUser(opponentName);\n        if (opponentInfo == null) {\n            CPH.SendMessage($\"@{userName}, user @{opponentName} not found.\");\n            return false;\n        }\n        \n        string opponentId = opponentInfo.UserId;\n        opponentName = opponentInfo.UserLogin;\n        \n        // Can't challenge yourself\n        if (userId == opponentId) {\n            CPH.SendMessage($\"@{userName}, you can't challenge yourself!\");\n            return false;\n        }\n        \n        // Load user data\n        string dataPath = @\"C:\\StreamerBot\\UserData\\eggs.json\";\n        \n        if (!File.Exists(dataPath)) {\n            CPH.SendMessage($\"@{userName}, egg data not found!\");\n            return false;\n        }\n        \n        string jsonData = File.ReadAllText(dataPath);\n        JObject data = JObject.Parse(jsonData);\n        \n        // Check both players have sufficient tokens\n        if (data[\"users\"] == null || data[\"users\"][userId] == null) {\n            CPH.SendMessage($\"@{userName}, you don't have any RRTokens! Use !buyRRT to purchase some.\");\n            return false;\n        }\n        \n        if (data[\"users\"][opponentId] == null) {\n            CPH.SendMessage($\"@{userName}, @{opponentName} doesn't have any RRTokens yet!\");\n            return false;\n        }\n        \n        int challengerTokens = (int)(data[\"users\"][userId][\"rrTokens\"] ?? 0);\n        int opponentTokens = (int)(data[\"users\"][opponentId][\"rrTokens\"] ?? 0);\n        \n        if (challengerTokens < wager) {\n            CPH.SendMessage($\"@{userName}, you don't have enough RRTokens! You have {challengerTokens}, need {wager}.\");\n            return false;\n        }\n        \n        if (opponentTokens < wager) {\n            CPH.SendMessage($\"@{userName}, @{opponentName} doesn't have enough RRTokens! They have {opponentTokens}, need {wager}.\");\n            return false;\n        }\n        \n        // Create PvP challenge\n        if (data[\"pvpChallenges\"] == null) {\n            data[\"pvpChallenges\"] = new JObject();\n        }\n        \n        // Store challenge (key: opponentId, value: challenge data)\n        data[\"pvpChallenges\"][opponentId] = new JObject();\n        data[\"pvpChallenges\"][opponentId][\"challengerId\"] = userId;\n        data[\"pvpChallenges\"][opponentId][\"challengerName\"] = userName;\n        data[\"pvpChallenges\"][opponentId][\"wager\"] = wager;\n        data[\"pvpChallenges\"][opponentId][\"timestamp\"] = DateTime.UtcNow.ToString(\"o\");\n        \n        File.WriteAllText(dataPath, data.ToString());\n        \n        CPH.SendMessage($\"⚔️ @{userName} challenges @{opponentName} to a PvP battle! Wager: {wager} RRTokens each. @{opponentName}, type !accept within 60 seconds to accept!\");\n        \n        return true;\n    }\n}"
+    }
+  ],
+  "cooldown": {
+    "enabled": true,
+    "type": "User",
+    "seconds": 120
+  },
+  "permissions": {
+    "everyone": true
+  }
+}
