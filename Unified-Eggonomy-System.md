@@ -606,6 +606,8 @@ SendMessage($"🎲 @{user} rolled a {roll}! {GetRollFlavor(roll)} Result: {resul
 
 ### Step 4: C# Scripting Examples
 
+**Note**: These are example functions to demonstrate the core logic. You'll need to adapt them to your specific Streamer.bot setup. The `GetUserEggs()` and `UpdateUserEggs()` helper functions referenced in later examples should be implemented based on the Egg Update Function pattern shown below.
+
 #### Egg Update Function
 ```csharp
 using System;
@@ -664,7 +666,7 @@ public class CPHInline
             return false;
         }
         
-        // Check balance
+        // Check balance (GetUserEggs is a helper function - see Egg Update Function above)
         int currentEggs = GetUserEggs(userId);
         if (currentEggs < wager) {
             CPH.SendMessage($"@{userName}, you don't have enough eggs! You have {currentEggs} eggs.");
@@ -702,7 +704,7 @@ public class CPHInline
             flavor = "💎 CRITICAL SUCCESS!";
         }
         
-        // Update eggs
+        // Update eggs (UpdateUserEggs is a helper function - see Egg Update Function above)
         UpdateUserEggs(userId, result);
         int newEggs = currentEggs + result;
         
