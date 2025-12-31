@@ -1,0 +1,29 @@
+{
+  "name": "!buyD20 - Purchase D20 Tokens",
+  "enabled": true,
+  "group": "Eggonomy - Commands",
+  "description": "Purchase D20 Tokens for the Adventure system (100 eggs per token)",
+  "triggers": [
+    {
+      "type": "Command",
+      "command": "!buyD20",
+      "caseSensitive": false
+    }
+  ],
+  "conditions": [],
+  "actions": [
+    {
+      "type": "C# Code",
+      "name": "Purchase D20 Tokens",
+      "code": "using System;\nusing System.IO;\nusing Newtonsoft.Json.Linq;\n\npublic class CPHInline\n{\n    public bool Execute()\n    {\n        string userId = args[\"userId\"].ToString();\n        string userName = args[\"userName\"].ToString();\n        string inputText = args[\"rawInput\"].ToString();\n        \n        // Parse amount\n        if (string.IsNullOrEmpty(inputText)) {\n            CPH.SendMessage($\"@{userName}, usage: !buyD20 [amount]. Example: !buyD20 5\");\n            return false;\n        }\n        \n        int amount;\n        if (!int.TryParse(inputText, out amount) || amount < 1) {\n            CPH.SendMessage($\"@{userName}, please specify a valid amount (minimum 1).\");\n            return false;\n        }\n        \n        int cost = amount * 100;\n        \n        // Load user data\n        string dataPath = @\"C:\\StreamerBot\\UserData\\eggs.json\";\n        string jsonData = File.ReadAllText(dataPath);\n        JObject data = JObject.Parse(jsonData);\n        \n        // Initialize user if needed\n        if (data[\"users\"] == null) data[\"users\"] = new JObject();\n        if (data[\"users\"][userId] == null) {\n            data[\"users\"][userId] = new JObject();\n            data[\"users\"][userId][\"eggs\"] = 0;\n            data[\"users\"][userId][\"d20Tokens\"] = 0;\n            data[\"users\"][userId][\"rrTokens\"] = 0;\n        }\n        \n        int currentEggs = (int)(data[\"users\"][userId][\"eggs\"] ?? 0);\n        \n        if (currentEggs < cost) {\n            CPH.SendMessage($\"@{userName}, you don't have enough eggs! You have {currentEggs} eggs, but need {cost} eggs.\");\n            return false;\n        }\n        \n        // Process purchase\n        data[\"users\"][userId][\"eggs\"] = currentEggs - cost;\n        data[\"users\"][userId][\"d20Tokens\"] = (int)(data[\"users\"][userId][\"d20Tokens\"] ?? 0) + amount;\n        \n        File.WriteAllText(dataPath, data.ToString());\n        \n        CPH.SendMessage($\"🎲 @{userName} purchased {amount} D20 Token(s) for {cost} eggs! Remaining: {currentEggs - cost} eggs.\");\n        return true;\n    }\n}"
+    }
+  ],
+  "cooldown": {
+    "enabled": true,
+    "type": "User",
+    "seconds": 10
+  },
+  "permissions": {
+    "everyone": true
+  }
+}

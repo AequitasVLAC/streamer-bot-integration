@@ -33,12 +33,32 @@ This comprehensive guide includes:
 
 ### Quick Start
 
+#### Option 1: Import Ready-to-Use Actions (Fastest)
+
 1. Install Streamer.bot and connect to your Twitch channel
-2. Set up user data storage (JSON or SQLite)
+2. Check out the **[Import Instructions](./IMPORT-INSTRUCTIONS.md)** for importing pre-configured actions
+3. Follow the **[Quick Start Guide](./streamerbot-imports/QUICK-START.md)** for step-by-step setup
+4. Import actions from the `streamerbot-imports/` directory
+5. Test and customize to fit your community
+
+#### Option 2: Manual Configuration (Most Flexible)
+
+1. Install Streamer.bot and connect to your Twitch channel
+2. Set up user data storage (JSON file)
 3. Follow the [Streamer.bot Configuration](./Unified-Eggonomy-System.md#streamerbot-configuration) section
 4. Configure Twitch event actions for egg rewards
 5. Set up chat commands for user interaction
 6. Test and adjust economy balance to fit your community
+
+### Importable Actions
+
+The `streamerbot-imports/` directory contains ready-to-use JSON templates for:
+- 💬 Chat egg rewards
+- 🎁 Bit and subscription rewards
+- 💰 Commands: `!eggs`, `!eggpack`, `!buyD20`, `!buyRRT`
+- 🎲 Games: `!roll20` and more
+
+See **[IMPORT-INSTRUCTIONS.md](./IMPORT-INSTRUCTIONS.md)** for details on importing these into Streamer.bot.
 
 ### Support
 

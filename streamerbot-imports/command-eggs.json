@@ -1,0 +1,29 @@
+{
+  "name": "!eggs - Check Egg Balance",
+  "enabled": true,
+  "group": "Eggonomy - Commands",
+  "description": "Allows users to check their current egg balance",
+  "triggers": [
+    {
+      "type": "Command",
+      "command": "!eggs",
+      "caseSensitive": false
+    }
+  ],
+  "conditions": [],
+  "actions": [
+    {
+      "type": "C# Code",
+      "name": "Get Egg Balance",
+      "code": "using System;\nusing System.IO;\nusing Newtonsoft.Json.Linq;\n\npublic class CPHInline\n{\n    public bool Execute()\n    {\n        string userId = args[\"userId\"].ToString();\n        string userName = args[\"userName\"].ToString();\n        \n        // Load user data\n        string dataPath = @\"C:\\StreamerBot\\UserData\\eggs.json\";\n        \n        if (!File.Exists(dataPath)) {\n            CPH.SendMessage($\"@{userName}, you have 0 eggs! Start chatting to earn some! 🥚\");\n            return false;\n        }\n        \n        string jsonData = File.ReadAllText(dataPath);\n        JObject data = JObject.Parse(jsonData);\n        \n        // Get user eggs\n        int eggs = 0;\n        if (data[\"users\"] != null && data[\"users\"][userId] != null) {\n            eggs = (int)data[\"users\"][userId][\"eggs\"];\n        }\n        \n        CPH.SendMessage($\"🥚 @{userName}, you have **{eggs}** eggs!\");\n        return true;\n    }\n}"
+    }
+  ],
+  "cooldown": {
+    "enabled": true,
+    "type": "User",
+    "seconds": 5
+  },
+  "permissions": {
+    "everyone": true
+  }
+}
