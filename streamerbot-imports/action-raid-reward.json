@@ -1,0 +1,26 @@
+{
+  "name": "Raid Egg Reward",
+  "enabled": true,
+  "group": "Eggonomy - Rewards",
+  "description": "Awards 10 eggs per raider to the raiding streamer",
+  "triggers": [
+    {
+      "type": "Event",
+      "event": "TwitchRaid"
+    }
+  ],
+  "conditions": [],
+  "actions": [
+    {
+      "type": "C# Code",
+      "name": "Award Raid Eggs",
+      "code": "using System;\nusing System.IO;\nusing Newtonsoft.Json.Linq;\n\npublic class CPHInline\n{\n    public bool Execute()\n    {\n        string userId = args[\"userId\"].ToString();\n        string userName = args[\"userName\"].ToString();\n        int viewers = int.Parse(args[\"viewers\"].ToString());\n        \n        // Calculate reward: 10 eggs per raider\n        int eggReward = viewers * 10;\n        \n        // Load user data\n        string dataPath = @\"C:\\StreamerBot\\UserData\\eggs.json\";\n        \n        JObject data;\n        if (File.Exists(dataPath)) {\n            string jsonData = File.ReadAllText(dataPath);\n            data = JObject.Parse(jsonData);\n        } else {\n            data = new JObject();\n            data[\"users\"] = new JObject();\n        }\n        \n        // Initialize user if needed\n        if (data[\"users\"] == null) data[\"users\"] = new JObject();\n        if (data[\"users\"][userId] == null) {\n            data[\"users\"][userId] = new JObject();\n            data[\"users\"][userId][\"eggs\"] = 0;\n            data[\"users\"][userId][\"d20Tokens\"] = 0;\n            data[\"users\"][userId][\"rrTokens\"] = 0;\n        }\n        \n        // Award eggs\n        int currentEggs = (int)(data[\"users\"][userId][\"eggs\"] ?? 0);\n        data[\"users\"][userId][\"eggs\"] = currentEggs + eggReward;\n        \n        File.WriteAllText(dataPath, data.ToString());\n        \n        CPH.SendMessage($\"🥚 Thanks for the raid @{userName}! You earned {eggReward} eggs ({viewers} raiders × 10)! Total: {currentEggs + eggReward} eggs.\");\n        \n        return true;\n    }\n}"
+    }
+  ],
+  "cooldown": {
+    "enabled": false
+  },
+  "permissions": {
+    "everyone": true
+  }
+}

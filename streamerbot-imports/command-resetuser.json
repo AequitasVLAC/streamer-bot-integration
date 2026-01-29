@@ -1,0 +1,29 @@
+{
+  "name": "!resetuser - Reset User Data (Moderator)",
+  "enabled": true,
+  "group": "Eggonomy - Moderator",
+  "description": "Moderator command to reset a user's economy data",
+  "triggers": [
+    {
+      "type": "Command",
+      "command": "!resetuser",
+      "caseSensitive": false
+    }
+  ],
+  "conditions": [],
+  "actions": [
+    {
+      "type": "C# Code",
+      "name": "Reset User Data",
+      "code": "using System;\nusing System.IO;\nusing Newtonsoft.Json.Linq;\n\npublic class CPHInline\n{\n    public bool Execute()\n    {\n        string executorName = args[\"userName\"].ToString();\n        bool isModerator = bool.Parse(args[\"isModerator\"].ToString());\n        bool isBroadcaster = bool.Parse(args[\"isBroadcaster\"].ToString());\n        \n        // Check permissions\n        if (!isModerator && !isBroadcaster) {\n            CPH.SendMessage($\"@{executorName}, this command is only available to moderators.\");\n            return false;\n        }\n        \n        string inputText = args[\"rawInput\"].ToString();\n        \n        // Parse input: !resetuser @username\n        if (string.IsNullOrEmpty(inputText)) {\n            CPH.SendMessage($\"@{executorName}, usage: !resetuser @username. Example: !resetuser @user\");\n            return false;\n        }\n        \n        string targetUser = inputText.Trim().TrimStart('@');\n        \n        // Get target user ID\n        var userInfo = CPH.TwitchGetUser(targetUser);\n        if (userInfo == null) {\n            CPH.SendMessage($\"@{executorName}, user @{targetUser} not found.\");\n            return false;\n        }\n        \n        string targetUserId = userInfo.UserId;\n        string targetUserName = userInfo.UserLogin;\n        \n        // Load user data\n        string dataPath = @\"C:\\StreamerBot\\UserData\\eggs.json\";\n        \n        if (!File.Exists(dataPath)) {\n            CPH.SendMessage($\"@{executorName}, no egg data found.\");\n            return false;\n        }\n        \n        string jsonData = File.ReadAllText(dataPath);\n        JObject data = JObject.Parse(jsonData);\n        \n        // Check if user exists\n        if (data[\"users\"] == null || data[\"users\"][targetUserId] == null) {\n            CPH.SendMessage($\"@{executorName}, @{targetUserName} has no egg data to reset.\");\n            return false;\n        }\n        \n        // Reset user data\n        data[\"users\"][targetUserId] = new JObject();\n        data[\"users\"][targetUserId][\"eggs\"] = 0;\n        data[\"users\"][targetUserId][\"d20Tokens\"] = 0;\n        data[\"users\"][targetUserId][\"rrTokens\"] = 0;\n        data[\"users\"][targetUserId][\"adventureState\"] = \"\";\n        data[\"users\"][targetUserId][\"lastAdventure\"] = \"\";\n        data[\"users\"][targetUserId][\"totalAdventures\"] = 0;\n        \n        File.WriteAllText(dataPath, data.ToString());\n        \n        CPH.SendMessage($\"🔄 @{targetUserName}'s economy data has been reset by @{executorName}.\");\n        \n        return true;\n    }\n}"
+    }
+  ],
+  "cooldown": {
+    "enabled": false
+  },
+  "permissions": {
+    "everyone": false,
+    "moderator": true,
+    "broadcaster": true
+  }
+}
